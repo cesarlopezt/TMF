@@ -1,11 +1,7 @@
 {% extends "finance/base.html" %}
 {% block content %}
-    <div class="container">
-        <h1 class="text-center text-uppercase">TMF</h1>
-        <hr>
-    </div>
 
-    <div class="container">
+    {% if user.is_authenticated %}
         <h6>Progress: </h6>
         <div class="progress">
             <div class="progress-bar progress-bar-success progress-bar-striped" style="width:50%;">50%</div>
@@ -17,15 +13,16 @@
                 <td>Amount</td>
                 <td>Description</td>
             </tr>
-            <tr>
-                <td>s</td>
-                <td>sd</td>
-                <td>dd</td>
-            </tr>
+            {% for movement in Movements %}
+                <tr>
+                    <td>{{movement.datePosted}}</td>
+                    <td>{{movement.description}}</td>
+                    <td>{{movement.Amount}}</td>
+                </tr>
+            {% endfor %}
         </table>
+    {% else %}
+        <h6>I NEED TO WRITE A HOMEPAGE</h6>
+    {% endif %}
 
-        <div class="alert alert-warning" role="alert">
-        This is a warning alert—check it out!
-        </div>
-    </div>
 {% endblock content %}
