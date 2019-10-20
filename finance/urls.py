@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
 from .views import MovementListView, MovementCreateView
+
+# from . import views
 
 urlpatterns = [
     path('', MovementListView.as_view(), name='finance-home'),
