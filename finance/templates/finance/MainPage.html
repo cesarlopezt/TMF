@@ -14,11 +14,13 @@
                 <td>Description</td>
             </tr>
             {% for movement in Movements %}
-                <tr>
-                    <td>{{movement.datePosted}}</td>
-                    <td>{{movement.description}}</td>
-                    <td>{{movement.Amount}}</td>
-                </tr>
+                {% if user == movement.user %}
+                    <tr>
+                        <td>{{movement.date}}</td>
+                        <td>{{movement.description}}</td>
+                        <td>{{movement.Amount}}</td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </table>
     {% else %}
