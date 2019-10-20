@@ -12,6 +12,7 @@
                 <td>Date</td>
                 <td>Amount</td>
                 <td>Description</td>
+                <td>Category</td>
             </tr>
             {% for movement in Movements %}
                 <!-- {% if user == movement.user %} -->
@@ -19,6 +20,7 @@
                     <td>{{movement.date}}</td>
                     <td>{{movement.description}}</td>
                     <td>{{movement.Amount}}</td>
+                    <td>{{movement.category}}</td>
                 </tr>
                 <!-- {% endif %} -->
             {% endfor %}
