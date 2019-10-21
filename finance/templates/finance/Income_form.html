@@ -6,7 +6,7 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">New Movement</legend>
+                <legend class="border-bottom mb-4">New Income</legend>
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
@@ -14,8 +14,5 @@
             </div>
         </form>
     </div>
-            
-
-
 
 {% endblock content %}

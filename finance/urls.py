@@ -1,10 +1,8 @@
 from django.urls import path
-from .views import MovementListView, MovementCreateView
-
-# from . import views
+from .views import MovementListView, ExpenseCreateView, IncomeCreateView
 
 urlpatterns = [
     path('', MovementListView.as_view(), name='finance-home'),
-    # path('Movement/<int:pk>/', MovementDetailView.as_view(), name='movement-detail'),
-    path('Movement/new/', MovementCreateView.as_view(), name='movement-create'),
+    path('add/Expense/', ExpenseCreateView.as_view(), name='expense-create'),
+    path('add/Income/', IncomeCreateView.as_view(), name='income-create')
 ]

@@ -1,25 +1,12 @@
 from django.views.generic import ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
-from .models import Movement
+from django.shortcuts import render
+from .models import Movement, Category, Type
 
-CATEGORIES = (
-    ('Ed', 'Education'),
-    ('Tr', 'Trasportation'),
-    ('Ho', 'Home'),
-    ('Gr', 'Groceries'),
-    ('PC', 'Personal Care'),
-    ('Tv', 'Travel'),
-    ('Gv', 'Giving'),
-    ('In', 'Investment'),
-    ('Fo', 'Food'),
-    ('En', 'Entertainment'),
-    ('Gs', 'Gas'),
-    ('Sb', 'Subscriptions'),
-    ('UN', 'Uncategorized')
-)
+#-------------------------------------------------------------------------------
 
-class MovementListView(ListView): # pylint: disable=too-many-ancestors
+class MovementListView(ListView):
     '''List of all the movements that the user has made.'''
     #model = Movement
     template_name = "finance/MainPage.html"
@@ -30,22 +17,48 @@ class MovementListView(ListView): # pylint: disable=too-many-ancestors
         '''Specifies that i only want the user that is currently logged in data.'''
         return Movement.objects.filter(user=self.request.user)
 
+#-------------------------------------------------------------------------------
+
 class DateInput(forms.DateInput):
     '''Defines the date input i want.'''
     input_type = 'date'
 
-# pylint: disable=too-many-ancestors
-class MovementCreateView(LoginRequiredMixin, CreateView):
-    '''The view that creates each movement.'''
+#-------------------------------------------------------------------------------
+
+class ExpenseCreateView(LoginRequiredMixin, CreateView):
+    '''The view that creates each Expense.'''
     model = Movement
-    fields = ['description', 'Amount','category', 'date']
+    fields = ['description', 'Amount', 'category', 'date']
+    template_name = "finance/Expense_form.html"
 
     def get_form(self, form_class=None):
-        form = super(MovementCreateView, self).get_form(form_class)
-        form.fields['category'] = forms.ChoiceField(choices=CATEGORIES)
+        form = super(ExpenseCreateView, self).get_form(form_class)
+        form.fields['category'].queryset = Category.objects.filter(type__name='Expense')
         form.fields['date'] = forms.DateField(widget=DateInput)
         return form
 
     def form_valid(self, form):
+        form.instance.Amount = abs(form.cleaned_data['Amount']) * -1
+        form.instance.type = Type.objects.get(name='Expense')
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+#-------------------------------------------------------------------------------
+
+class IncomeCreateView(LoginRequiredMixin, CreateView):
+    '''The view that creates each Income.'''
+    model = Movement
+    fields = ['description', 'Amount', 'category', 'date']
+    template_name = "finance/Income_form.html"
+
+    def get_form(self, form_class=None):
+        form = super(IncomeCreateView, self).get_form(form_class)
+        form.fields['category'].queryset = Category.objects.filter(type__name='Income')
+        form.fields['date'] = forms.DateField(widget=DateInput)
+        return form
+
+    def form_valid(self, form):
+        form.instance.Amount = abs(form.cleaned_data['Amount'])
+        form.instance.type = Type.objects.get(name='Income')
         form.instance.user = self.request.user
         return super().form_valid(form)
