@@ -2,6 +2,7 @@ from django.views.generic import ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from .models import Movement, Category, Type
 
 #-------------------------------------------------------------------------------
@@ -15,7 +16,8 @@ class MovementListView(ListView):
 
     def get_queryset(self):
         '''Specifies that i only want the user that is currently logged in data.'''
-        return Movement.objects.filter(user=self.request.user)
+        if self.request.user.is_authenticated:        
+            return Movement.objects.filter(user=self.request.user)
 
 #-------------------------------------------------------------------------------
 
