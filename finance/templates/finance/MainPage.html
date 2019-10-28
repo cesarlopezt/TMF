@@ -1,11 +1,14 @@
 {% extends "finance/base.html" %}
+{% load crispy_forms_tags %}
+
 {% block content %}
 
     {% if user.is_authenticated %}
         <h6>Progress: </h6>
-        <div class="progress">
-            <div class="progress-bar progress-bar-success progress-bar-striped" style="width:50%;">50%</div>
-        </div>
+        <form method="GET">
+            {{filter.form|crispy}}
+            <button type="submit" class="btn btn-primary">Go</button>
+        </form>
         <br><hr>
         <div class="row">
             <button type="button" onclick="location.href='add/Income/'" class="btn btn-outline-dark col-lg-6">Add Income</button>
@@ -20,7 +23,8 @@
                 <td>Description</td>
                 <td>Category</td>
             </tr>
-            {% for movement in Movements %}
+            <!-- Movements -->
+            {% for movement in filter.qs  %}
                 <tr>
                     <td>{{movement.date}}</td>
                     <td>{{movement.description}}</td>
