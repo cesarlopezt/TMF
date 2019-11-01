@@ -2,10 +2,19 @@ from django.views.generic import ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
 from .filters import MovementFilter
+from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 # from django.shortcuts import render
 # from django.contrib.auth.decorators import login_required
 from .models import Movement, Category, Type
 
+#-------------------------------------------------------------------------------
+
+class LazyEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Movement):
+            return str(obj)
+        return super().default(obj)
 #-------------------------------------------------------------------------------
 
 class MovementListView(ListView):
@@ -18,6 +27,7 @@ class MovementListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['filter'] = MovementFilter(self.request.GET, self.get_queryset())
+        context['serialized'] = serializers.serialize('json', context['filter'].qs, fields=('Amount', 'category'), cls=LazyEncoder)
         return context
 
     def get_queryset(self):

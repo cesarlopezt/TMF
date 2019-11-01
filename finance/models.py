@@ -22,8 +22,6 @@ class Movement(models.Model):
     datePosted = models.DateTimeField(default=timezone.now)
     date = models.DateField(default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # type = models.CharField(max_length=10, default='In')
-    # category = models.CharField(max_length=20, default='Uncategorized')
     type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
