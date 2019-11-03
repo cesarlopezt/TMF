@@ -1,20 +1,14 @@
 from django.views.generic import ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
-from .filters import MovementFilter
-from django.core import serializers
+from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
+from json import loads, dumps
+from .filters import MovementFilter
 # from django.shortcuts import render
 # from django.contrib.auth.decorators import login_required
 from .models import Movement, Category, Type
 
-#-------------------------------------------------------------------------------
-
-class LazyEncoder(DjangoJSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Movement):
-            return str(obj)
-        return super().default(obj)
 #-------------------------------------------------------------------------------
 
 class MovementListView(ListView):
@@ -25,9 +19,19 @@ class MovementListView(ListView):
     ordering = ['-date']
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['filter'] = MovementFilter(self.request.GET, self.get_queryset())
-        context['serialized'] = serializers.serialize('json', context['filter'].qs, fields=('Amount', 'category'), cls=LazyEncoder)
+        #Overwritting the Listview to insert filter and add extra context
+        context = super().get_context_data(**kwargs) 
+        context['filter'] = MovementFilter(self.request.GET, self.get_queryset()) 
+        # ^ filter used to limit by year and month
+        context['serialized'] = serialize(
+            'json', context['filter'].qs,
+            fields=('Amount', 'category')
+            )
+
+        data = loads(context['serialized'])
+        for d in data: #overwriting my json to change pk to name of each category
+            d['fields']['category'] = Category.objects.get(pk=d['fields']['category']).name
+        context['test'] = dumps(data)
         return context
 
     def get_queryset(self):
