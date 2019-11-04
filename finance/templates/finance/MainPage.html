@@ -29,7 +29,6 @@
         <hr><br>
         <canvas id="myChart" width="10" height="10"></canvas>
         <script>
-            // var dataFromDjango = '{{ chart }}';
             var jsonData = JSON.parse('{{ chart | safe }}');
             var ctx = document.getElementById('myChart');
             console.log(jsonData)
@@ -38,7 +37,7 @@
                 data: {
                     labels: jsonData.labels,
                     datasets: [{
-                        label: '# of Votes',
+                        label: '',
                         data: jsonData.default,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',

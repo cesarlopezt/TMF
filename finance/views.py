@@ -36,9 +36,16 @@ class MovementListView(ListView):
         labels = []
         data = []
         for d in loads(context['serialized']):
-            labels.append(d['fields']['category'])
-            data.append(d['fields']['Amount'])
-            
+            if d['fields']['category'] not in labels:
+                labels.append(d['fields']['category'])
+                data.append(d['fields']['Amount'])
+            else:
+                index = labels.index(d['fields']['category'])
+                data[index] = float(data[index])
+                data[index] += float(d['fields']['Amount'])
+                data[index] = str(data[index])
+                print('hello')
+          
         context['chart'] = dumps({
             "labels": labels,
             "default": data,
