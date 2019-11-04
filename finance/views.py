@@ -13,10 +13,8 @@ from .models import Movement, Category, Type
 
 class MovementListView(ListView):
     '''List of all the movements that the user has made.'''
-    #model = Movement
     template_name = "finance/MainPage.html"
     context_object_name = 'Movements'
-    ordering = ['-date']
 
     def get_context_data(self, **kwargs):
         #Overwritting the Listview to insert filter and add extra context
@@ -26,31 +24,47 @@ class MovementListView(ListView):
         context['serialized'] = serialize(
             'json',
             context['filter'].qs,
-            fields=('Amount', 'category')
+            fields=('Amount', 'category', 'type')
             )
 
         data = loads(context['serialized'])
         for d in data: #overwriting my json to change pk to name of each category
             d['fields']['category'] = Category.objects.get(pk=d['fields']['category']).name
         context['serialized'] = dumps(data)
-        labels = []
-        data = []
-        for d in loads(context['serialized']):
-            if d['fields']['category'] not in labels:
-                labels.append(d['fields']['category'])
-                data.append(d['fields']['Amount'])
+
+        labelsIncome = [] #Lists that i fill to send to the json
+        dataIncome = []
+        labelsExpense = []
+        dataExpense = []
+      
+        def Selector(d, listLabels, listData):
+            #Just one function to use in income and expenses
+            if d['fields']['category'] not in listLabels:
+                #adds a new category and its amount
+                listLabels.append(d['fields']['category'])
+                listData.append(d['fields']['Amount'])
             else:
-                index = labels.index(d['fields']['category'])
-                data[index] = float(data[index])
-                data[index] += float(d['fields']['Amount'])
-                data[index] = str(data[index])
-                print('hello')
-          
-        context['chart'] = dumps({
-            "labels": labels,
-            "default": data,
+                #sum to a category new amount
+                index = listLabels.index(d['fields']['category'])
+                listData[index] = float(listData[index])
+                listData[index] += float(d['fields']['Amount'])
+                listData[index] = str(listData[index])
+
+        for d in loads(context['serialized']):
+            #clasify if its an income or expense
+            if d['fields']['type'] == 2:
+                Selector(d, labelsExpense, dataExpense)
+            elif d['fields']['type'] == 1:
+                Selector(d, labelsIncome, dataIncome)
+
+        context['chartIncome'] = dumps({
+            "labels": labelsIncome,
+            "default": dataIncome,
         })
-        # context['chart'] = dumps(context['charts'])
+        context['chartExpense'] = dumps({
+            "labels": labelsExpense,
+            "default": dataExpense,
+        })
         return context
 
     def get_queryset(self):
