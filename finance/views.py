@@ -20,18 +20,30 @@ class MovementListView(ListView):
 
     def get_context_data(self, **kwargs):
         #Overwritting the Listview to insert filter and add extra context
-        context = super().get_context_data(**kwargs) 
+        context = super().get_context_data(**kwargs)
         context['filter'] = MovementFilter(self.request.GET, self.get_queryset()) 
         # ^ filter used to limit by year and month
         context['serialized'] = serialize(
-            'json', context['filter'].qs,
+            'json',
+            context['filter'].qs,
             fields=('Amount', 'category')
             )
 
         data = loads(context['serialized'])
         for d in data: #overwriting my json to change pk to name of each category
             d['fields']['category'] = Category.objects.get(pk=d['fields']['category']).name
-        context['test'] = dumps(data)
+        context['serialized'] = dumps(data)
+        labels = []
+        data = []
+        for d in loads(context['serialized']):
+            labels.append(d['fields']['category'])
+            data.append(d['fields']['Amount'])
+            
+        context['chart'] = dumps({
+            "labels": labels,
+            "default": data,
+        })
+        # context['chart'] = dumps(context['charts'])
         return context
 
     def get_queryset(self):
