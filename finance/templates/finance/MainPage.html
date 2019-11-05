@@ -4,12 +4,12 @@
 {% block content %}
 
     {% if user.is_authenticated %}      
-        <br><hr>
+        <hr>
         <div class="row">
             <button type="button" onclick="location.href='add/Income/'" class="btn btn-outline-dark col-lg-6">Add Income</button>
             <button type="button" onclick="location.href='add/Expense/'" class="btn btn-outline-dark col-lg-6">Add Expense</button>
         </div>
-        <hr><br>
+        <hr>
         <form method="GET">
 
             <div class="row text-center">
@@ -23,14 +23,15 @@
             </div>
 
         </form>
-        <hr><br>
-        
+        <hr>
+
         <div class="row">
             <canvas class="col-lg-4 mx-auto" id="myChartIncome" width="10" height="10"></canvas>
             <canvas class="col-lg-4 mx-auto" id="myChartExpense" width="10" height="10"></canvas>
         </div>
 
         <script>
+            //Sending Data to javascript
             let jsonDataI = JSON.parse('{{ chartIncome | safe }}');
             let jsonDataE = JSON.parse('{{ chartExpense | safe }}');
         </script>
