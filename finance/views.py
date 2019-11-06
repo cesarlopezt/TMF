@@ -16,10 +16,18 @@ class MovementListView(ListView):
     template_name = "finance/MainPage.html"
     context_object_name = 'Movements'
 
+    def get_queryset(self):
+        '''Specifies that i only want the user that is currently logged in data.'''
+        if self.request.user.is_authenticated:        
+            return Movement.objects.filter(user=self.request.user).order_by('-date')
+            #Sends the queryset ordered by date
+
     def get_context_data(self, **kwargs):
         #Overwritting the Listview to insert filter and add extra context
         context = super().get_context_data(**kwargs)
-        context['filter'] = MovementFilter(self.request.GET, self.get_queryset()) 
+        context['filter'] = MovementFilter(self.request.GET, self.get_queryset())
+        for obj in context['filter'].qs:
+            print(obj)
         # ^ filter used to limit by year and month
         context['serialized'] = serialize(
             'json',
@@ -67,11 +75,6 @@ class MovementListView(ListView):
         })
         return context
 
-    def get_queryset(self):
-        '''Specifies that i only want the user that is currently logged in data.'''
-        if self.request.user.is_authenticated:        
-            return Movement.objects.filter(user=self.request.user)
-
 #-------------------------------------------------------------------------------
 
 class DateInput(forms.DateInput):
@@ -88,6 +91,7 @@ class ExpenseCreateView(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super(ExpenseCreateView, self).get_form(form_class)
+        form.fields['description'] = forms.CharField(required=False)
         form.fields['category'].queryset = Category.objects.filter(type__name='Expense')
         form.fields['date'] = forms.DateField(widget=DateInput)
         return form
@@ -108,6 +112,7 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super(IncomeCreateView, self).get_form(form_class)
+        form.fields['description'] = forms.CharField(required=False)
         form.fields['category'].queryset = Category.objects.filter(type__name='Income')
         form.fields['date'] = forms.DateField(widget=DateInput)
         return form

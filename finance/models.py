@@ -17,7 +17,7 @@ class Category(models.Model):
         return self.name
 
 class Movement(models.Model):
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=100, null=True)
     Amount = models.DecimalField(max_digits=19, decimal_places=2)
     datePosted = models.DateTimeField(default=timezone.now)
     date = models.DateField(default=timezone.now)
