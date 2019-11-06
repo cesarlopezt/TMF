@@ -1,12 +1,9 @@
+from json import loads, dumps
 from django.views.generic import ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
 from django.core.serializers import serialize
-from django.core.serializers.json import DjangoJSONEncoder
-from json import loads, dumps
 from .filters import MovementFilter
-# from django.shortcuts import render
-# from django.contrib.auth.decorators import login_required
 from .models import Movement, Category, Type
 
 #-------------------------------------------------------------------------------
@@ -42,6 +39,8 @@ class MovementListView(ListView):
         dataIncome = []
         labelsExpense = []
         dataExpense = []
+        sum_income = 0
+        sum_expense = 0
       
         def Selector(d, listLabels, listData):
             #Just one function to use in income and expenses
@@ -60,8 +59,10 @@ class MovementListView(ListView):
             #clasify if its an income or expense
             if d['fields']['type'] == 2:
                 Selector(d, labelsExpense, dataExpense)
+                sum_expense += abs(float(d['fields']['Amount']))
             elif d['fields']['type'] == 1:
                 Selector(d, labelsIncome, dataIncome)
+                sum_income += abs(float(d['fields']['Amount']))
 
         context['chartIncome'] = dumps({
             "labels": labelsIncome,
@@ -71,6 +72,11 @@ class MovementListView(ListView):
             "labels": labelsExpense,
             "default": dataExpense,
         })
+        context['SUM'] = {
+            "income": sum_income,
+            "expense": sum_expense,
+            "balance": sum_income-sum_expense,
+        }
         return context
 
 #-------------------------------------------------------------------------------

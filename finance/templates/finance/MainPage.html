@@ -25,8 +25,35 @@
         </form>
         <hr>
 
-        <button class="btn btn-outline-dark mx-auto" onclick="myFunction()">Show Charts</button>
+        <!-- <div class="row">
+            <div class="col-lg-9 ">
+                <button class="btn btn-outline-dark mx-auto" onclick="myFunction()">Show Charts</button>                
+            </div>
+            <div class="col-lg-3 ">
+                <ul style="list-style-type: none;">
+                    <li>Sum of income: {{SUM.income}}</li> 
+                    <li>Sum of expense: {{SUM.expense}}</li> 
+                    <li>Balance: {{SUM.balance}}</li>
 
+                </ul>   
+            </div>
+        </div> -->
+        <div class="d-flex justify-content-between">
+            <div>
+                <button class="btn btn-outline-dark mx-auto" onclick="myFunction()">Show Charts</button>                
+            </div>
+            <div>
+                <ul style="list-style-type: none;">
+                    <li>Sum of income: {{SUM.income}}</li> 
+                    <li>Sum of expense: {{SUM.expense}}</li> 
+                    <li>Balance: {{SUM.balance}}</li>
+
+                </ul>   
+            </div>
+
+        </div>
+         
+        
         <script>
             function myFunction() {
                 var x = document.getElementById("ChartDiv");
