@@ -26,8 +26,6 @@ class MovementListView(ListView):
         #Overwritting the Listview to insert filter and add extra context
         context = super().get_context_data(**kwargs)
         context['filter'] = MovementFilter(self.request.GET, self.get_queryset())
-        for obj in context['filter'].qs:
-            print(obj)
         # ^ filter used to limit by year and month
         context['serialized'] = serialize(
             'json',
