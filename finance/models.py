@@ -26,7 +26,10 @@ class Movement(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.description
+        if self.description:
+            return self.description
+        else:
+            return self.category
 
     def get_absolute_url(self):
         return reverse('finance-home')
