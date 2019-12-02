@@ -25,7 +25,9 @@ SECRET_KEY = '0&!cxel%3pjtw1d0^vpa)&(0orvgm_$@j!gn8h)s#bfevm49$8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'trackmyfinance.herokuapp.com',
+]
 
 
 # Application definition
