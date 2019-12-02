@@ -1,0 +1,7 @@
+Django==2.2.3
+django-crispy-forms==1.8.0
+django-filter==2.2.0
+gunicorn==20.0.4
+pytz==2019.1
+six==1.12.0
+sqlparse==0.3.0
