@@ -1,5 +1,4 @@
 // Chart Income
-alert("gola");
 var ctx = document.getElementById('myChartIncome');
 console.log(jsonDataI)
 var myChart = new Chart(ctx, {
